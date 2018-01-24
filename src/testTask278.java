@@ -3,7 +3,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
-public class testTask {
+public class testTask278 {
 
     public static void main(String[] args) throws FileNotFoundException {
         Scanner in = new Scanner(new File("input.txt"));
