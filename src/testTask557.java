@@ -1,77 +1,64 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class testTask557 {
 
-    public static void main(String[] args) throws FileNotFoundException {
-        Scanner in = new Scanner(new File("input.txt"));
-        PrintWriter out = new PrintWriter("output.txt");
-
-        int m = in.nextInt();
-        int n = in.nextInt();
-        int a = in.nextInt();
-        int b = in.nextInt();
-        int p = in.nextInt();
-
-        int[][] mA = new int[n][n];
-        int[][] mB = new int[n][n];
-
-
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                mA[i][j] = in.nextInt();
+    public static void main(String ... args) throws IOException {
+        try(Scanner scanner = new Scanner(Paths.get("INPUT.TXT"));
+            FileWriter out = new FileWriter("OUTPUT.TXT")){
+            ArrayList<Integer> countAndSize = new ArrayList<>(Arrays.stream(scanner.nextLine()
+                    .split(" "))
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toList()));
+            int count = countAndSize.get(0);
+            int size = countAndSize.get(1);
+            ArrayList<Integer> lineAndColumn = new ArrayList<>(Arrays.stream(scanner.nextLine()
+                    .split(" "))
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toList()));
+            int primeNumber = Arrays.stream(scanner.nextLine()
+                    .split(" "))
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toList()).get(0);
+            ArrayList<Integer> array = new ArrayList<>();
+            scanner.nextLine();
+            for(int i = 0 ; i < size ; i++){
+                if(i == (lineAndColumn.get(0)-1)) {
+                    array.addAll(Arrays.stream(scanner.nextLine()
+                            .split(" "))
+                            .map(Integer::parseInt)
+                            .collect(Collectors.toList()));
+                }else{
+                    scanner.nextLine();
+                }
             }
+            while(count > 1) {
+                scanner.nextLine();
+                ArrayList<Integer> array1 = new ArrayList<>(Collections.nCopies(countAndSize.get(1),0));
+                for(int i = 0 ; i < size; i++){
+                    ArrayList<Integer> array2 = new ArrayList<>(Arrays.stream(scanner.nextLine()
+                            .split(" "))
+                            .map(Integer::parseInt)
+                            .collect(Collectors.toList()));
+                    for (int j = 0; j < size; j++) {
+                        array1.set(j, (array1.get(j) + array.get(i) * array2.get(j)) % primeNumber);
+                    }
+                }
+                Collections.copy(array,array1);
+                count--;
+            }
+            out.write(String.valueOf(array.get(lineAndColumn.get(1)-1)));
+            out.flush();
         }
+        catch(IOException e){
 
-        if (m>1) {
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    mB[i][j] = in.nextInt();
-                }
-            }
-
-
-            int[][] res = new int[n][n];
-
-
-            for (int t = 0; t < m - 2; t++) {
-
-                for (int i = 0; i < n; i++) {
-                    for (int j = 0; j < n; j++) {
-                        for (int k = 0; k < n; k++) {
-                            res[i][j] += mA[i][k] * mB[k][j];
-                        }
-                    }
-                }
-
-                for (int i = 0; i < n; i++) {
-                    for (int j = 0; j < n; j++) {
-                        mA[i][j] = res[i][j];
-                        mB[i][j] = in.nextInt();
-                        res[i][j] = 0;
-                    }
-                }
-
-            }
-
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    for (int k = 0; k < n; k++) {
-                        res[i][j] += mA[i][k] * mB[k][j];
-                    }
-                }
-            }
-            out.println(res[a - 1][b - 1] % p);
-            out.println(res[a - 1][b - 1]);
-            out.close();
-        }
-        else
-        {
-            out.println(mA[a - 1][b - 1] % p);
-            out.close();
+            e.printStackTrace();
         }
     }
-
 }
